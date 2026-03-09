@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #F5F5F3;
+  --color-fg: #1A1A1A;
+  --color-accent: #FF4500;
+  /* Industrial Safety Orange */
+  /* International Klein Blue */
+  --color-bordercolor: #D4D4D0;
+
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  overflow-x: hidden;
+}
+
+.grid-border {
+  border: 1px solid var(--color-bordercolor);
+}
+
+.grid-border-b {
+  border-bottom: 1px solid var(--color-bordercolor);
+}
+
+.grid-border-r {
+  border-right: 1px solid var(--color-bordercolor);
+}
+
+.grid-border-l {
+  border-left: 1px solid var(--color-bordercolor);
+}
+
+.grid-border-t {
+  border-top: 1px solid var(--color-bordercolor);
+}
+
+/* Grayscale treatment for the portrait */
+.portrait-container img {
+  filter: grayscale(100%) contrast(110%);
+  transition: filter 0.4s ease;
+}
+
+.portrait-container:hover img {
+  filter: grayscale(0%) contrast(100%);
+}
+
+/* Marquee Animation */
+.marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  background: var(--color-fg);
+  color: var(--color-bg);
+  will-change: transform;
+}
+
+.marquee-content {
+  display: flex;
+  animation: scroll 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Mock Project Interactive Area */
+.mock-console {
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.console-line {
+  opacity: 0;
+  animation: fadeIn 0.1s forwards;
+  will-change: opacity;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.data-row {
+  transition: background-color 0.2s;
+}
+
+.data-row:hover {
+  background-color: rgba(67, 56, 202, 0.05);
+  /* Slight indigo tint */
+}
