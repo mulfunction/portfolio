@@ -1,9 +1,127 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { Terminal, Code2, Globe, Database, ArrowDown, FolderCode, Table, Wand2, RotateCw } from "lucide-react";
+import Image from "next/image";
+import { Terminal, Code2, Globe, Database, ArrowDown, FolderCode, Table, Wand2, RotateCw, ShieldCheck, Activity, ShieldAlert } from "lucide-react";
+
+// MOCK DATA: Simulating the 3 separate Project Flows
+const PROJECTS = [
+  {
+    id: "01",
+    title: "B2B Lead Generation Scraper",
+    problem: "Sales team spending 15 hrs/wk manually copying emails from directories.",
+    tech: ["Node.js", "Playwright"],
+    result: "5,000+ Verified Leads / Week",
+    command: "node index.js",
+    tableFile: "leads.csv",
+    tableHeaders: ["ID", "COMPANY", "CLEANED_PHONE"],
+    renderConsole: () => (
+      <>
+        <div className="console-line text-blue-400 mb-2">[INFO] Initializing Playwright cluster...</div>
+        <div className="console-line text-blue-400 mb-2" style={{ animationDelay: "0.5s" }}>[INFO] Loading residential proxies...</div>
+        <div className="console-line text-yellow-400 mb-2" style={{ animationDelay: "1.2s" }}>[WARN] Cloudflare challenge detected on Target A. Solving...</div>
+        <div className="console-line text-green-400 mb-2" style={{ animationDelay: "2.5s" }}>[SUCCESS] Challenge bypassed. Beginning extraction.</div>
+        <div className="console-line text-gray-400 mb-1" style={{ animationDelay: "3.0s" }}>&gt; Extracted row: Apex Plumbing | 214-555-0192</div>
+        <div className="console-line text-gray-400 mb-1" style={{ animationDelay: "3.2s" }}>&gt; Extracted row: Dallas Leak Detect | 469-555-8811</div>
+        <div className="console-line text-gray-400 mb-1" style={{ animationDelay: "3.4s" }}>&gt; Extracted row: Elite Water Co | [OBFUSCATED_DOM]</div>
+        <div className="console-line text-purple-400 mb-2" style={{ animationDelay: "3.6s" }}>[PROCESS] Running regex de-obfuscation on Elite Water Co...</div>
+        <div className="console-line text-green-400 mb-4" style={{ animationDelay: "4.2s" }}>[SUCCESS] Recovered: 469-555-9002</div>
+        <div className="console-line text-blue-400" style={{ animationDelay: "5.0s" }}>Writing batch to leads.csv... <span className="animate-pulse">_</span></div>
+      </>
+    ),
+    renderTable: () => (
+      <>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "3.1s" }}>
+          <div className="col-span-1 text-gray-400">01</div><div className="col-span-4 font-bold truncate">Apex Plumbing</div><div className="col-span-7 text-[var(--color-accent)]">214-555-0192</div>
+        </div>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "3.3s" }}>
+          <div className="col-span-1 text-gray-400">02</div><div className="col-span-4 font-bold truncate">Dallas Leak Detect</div><div className="col-span-7 text-[var(--color-accent)]">469-555-8811</div>
+        </div>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "4.3s" }}>
+          <div className="col-span-1 text-gray-400">03</div><div className="col-span-4 font-bold truncate">Elite Water Co</div>
+          <div className="col-span-7 text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1 py-0.5 rounded inline-flex items-center gap-1"><Wand2 className="w-3 h-3 text-[var(--color-accent)]" /> 469-555-9002</div>
+        </div>
+      </>
+    )
+  },
+  {
+    id: "02",
+    title: "Competitor Price Tracker",
+    problem: "Losing margin because competitor pricing changes went unnoticed for days.",
+    tech: ["Python", "Requests/BS4"],
+    result: "Real-time Pricing Alerts",
+    command: "python tracker.py",
+    tableFile: "prices.csv",
+    tableHeaders: ["SKU", "COMPETITOR", "PRICE"],
+    renderConsole: () => (
+      <>
+        <div className="console-line text-blue-400 mb-2">[INIT] Booting automated pricing engine v2.1...</div>
+        <div className="console-line text-purple-400 mb-2" style={{ animationDelay: "0.5s" }}>[SYS] Rotating TLS Fingerprints...</div>
+        <div className="console-line text-blue-400 mb-2" style={{ animationDelay: "1.0s" }}>[INFO] Fetching catalog for "CompetitorA"...</div>
+        <div className="console-line text-gray-400 mb-1" style={{ animationDelay: "1.5s" }}>&gt; SKU-9921: $49.99 (Unchanged)</div>
+        <div className="console-line text-gray-400 mb-1" style={{ animationDelay: "1.8s" }}>&gt; SKU-8820: $12.00 (Unchanged)</div>
+        <div className="console-line text-yellow-400 mb-1" style={{ animationDelay: "2.1s" }}>[ALERT] SKU-4410 Price dropped! $99.99 -&gt; $85.00</div>
+        <div className="console-line text-green-400 mb-4" style={{ animationDelay: "2.5s" }}>[SUCCESS] Triggering Slack notification to Sales Team.</div>
+        <div className="console-line text-gray-400 mb-2" style={{ animationDelay: "3.2s" }}>[INFO] Sleeping for 60 seconds... <span className="animate-pulse">_</span></div>
+      </>
+    ),
+    renderTable: () => (
+      <>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "1.6s" }}>
+          <div className="col-span-1 text-gray-400">01</div><div className="col-span-4 font-bold truncate">SKU-9921</div><div className="col-span-7 font-bold">$49.99</div>
+        </div>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "1.9s" }}>
+          <div className="col-span-1 text-gray-400">02</div><div className="col-span-4 font-bold truncate">SKU-8820</div><div className="col-span-7 font-bold">$12.00</div>
+        </div>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "2.2s" }}>
+          <div className="col-span-1 text-yellow-400">03</div><div className="col-span-4 font-bold truncate text-yellow-400">SKU-4410</div>
+          <div className="col-span-7 text-yellow-400 bg-yellow-400/10 px-1 py-0.5 rounded inline-flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-yellow-400" /> $85.00 (CHANGE)</div>
+        </div>
+      </>
+    )
+  },
+  {
+    id: "03",
+    title: "Webhook API Integrations",
+    problem: "Siloed SaaS apps causing manual data entry errors and slow response times.",
+    tech: ["Express", "Node.js"],
+    result: "Instant Sync & 0 Errors",
+    command: "npm start",
+    tableFile: "system_logs.db",
+    tableHeaders: ["TIMESTAMP", "EVENT_TYPE", "STATUS"],
+    renderConsole: () => (
+      <>
+        <div className="console-line text-green-400 mb-2">[SYSTEM] Server is active and listening on port 8080.</div>
+        <div className="console-line text-gray-400 mb-4">[SYSTEM] Waiting for trigger payloads...</div>
+        <div className="console-line text-yellow-400 mb-1" style={{ animationDelay: "1.5s" }}>[10:45:01] 📥 INCOMING WEBHOOK DETECTED (Zapier)</div>
+        <div className="console-line text-green-400 mb-2" style={{ animationDelay: "1.6s" }}>✅ [AUTH] Signature validated. Processing payload...</div>
+        <div className="console-line text-gray-400 mb-1" style={{ animationDelay: "1.8s" }}>  ├ Raw Fields Detected: 12</div>
+        <div className="console-line text-purple-400 mb-2" style={{ animationDelay: "2.5s" }}>[DB_COMMIT] UPSERT INTO "leads_table"...</div>
+        <div className="console-line text-green-400 mb-4" style={{ animationDelay: "2.8s" }}>[200 OK] Transformation cycle complete.</div>
+        <div className="console-line text-yellow-400 mb-1" style={{ animationDelay: "4.5s" }}>[10:45:04] 📥 INCOMING WEBHOOK DETECTED (Stripe)</div>
+        <div className="console-line text-red-500 mb-2" style={{ animationDelay: "4.6s" }}>❌ [401] UNAUTHORIZED: Invalid signature. Dropping. <span className="animate-pulse">_</span></div>
+      </>
+    ),
+    renderTable: () => (
+      <>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-[11px] items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "1.5s" }}>
+          <div className="col-span-1 text-gray-400">01</div><div className="col-span-4 font-bold truncate">10:45:01Z</div><div className="col-span-7">Zapier_Lead_Sync</div>
+        </div>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-[11px] items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "2.8s" }}>
+          <div className="col-span-1 text-gray-400">02</div><div className="col-span-4 font-bold truncate">10:45:01Z</div>
+          <div className="col-span-7 text-green-500 bg-green-500/10 px-1 py-0.5 rounded inline-flex items-center gap-1 font-bold"><Activity className="w-3 h-3" /> SUCCESS_200</div>
+        </div>
+        <div className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-[11px] items-center border-b border-gray-100 opacity-0" style={{ animation: "fadeIn 0.1s forwards", animationDelay: "4.6s" }}>
+          <div className="col-span-1 text-gray-400">03</div><div className="col-span-4 font-bold text-red-400 truncate">10:45:04Z</div>
+          <div className="col-span-7 text-red-500 bg-red-500/10 px-1 py-0.5 rounded inline-flex items-center gap-1 font-bold"><ShieldAlert className="w-3 h-3" /> DROPPED_401</div>
+        </div>
+      </>
+    )
+  }
+];
 
 export default function Home() {
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const [key, setKey] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -82,11 +200,14 @@ export default function Home() {
 
         {/* Portrait Slot */}
         <div className="col-span-1 md:col-span-5 relative portrait-container group overflow-hidden bg-gray-200 min-h-[500px]">
-          {/* Placeholder Image (Replace with actual portrait) */}
-          <img
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop"
+          {/* Real Portrait Image */}
+          <Image
+            src="/portrait.jpg"
             alt="Muldan Portrait"
-            className="w-full h-full object-cover object-center absolute inset-0"
+            width={800}
+            height={1000}
+            priority
+            className="w-full h-full object-cover object-center absolute inset-0 grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] via-transparent to-transparent opacity-80"></div>
@@ -165,24 +286,27 @@ export default function Home() {
             <FolderCode className="w-5 h-5" /> Case_Studies
           </h2>
           <div className="space-y-4 font-mono text-sm max-w-sm">
-            {/* Active State */}
-            <button className="w-full text-left p-6 border-2 border-[var(--color-fg)] bg-white font-black shadow-[4px_4px_0_0_var(--color-fg)] transform -translate-y-1 -translate-x-1 transition-all relative z-10">
-              <span className="text-[var(--color-accent)] font-bold text-xs flex items-center gap-2 mb-2">
-                <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse"></span>
-                &gt; ACTIVE_PROCESS [01]
-              </span>
-              B2B Lead Generation Scraper
-            </button>
-
-            {/* Inactive States */}
-            <button className="w-full text-left p-6 grid-border bg-transparent border-l-4 border-l-transparent hover:bg-white transition-colors text-gray-500 hover:text-[var(--color-fg)] border-t-transparent first:border-t-[var(--color-bordercolor)]">
-              <span className="text-gray-400 text-xs block mb-1">PROJECT.02</span>
-              Competitor Price Tracker
-            </button>
-            <button className="w-full text-left p-6 grid-border bg-transparent border-l-4 border-l-transparent hover:bg-white transition-colors text-gray-500 hover:text-[var(--color-fg)] border-t-transparent">
-              <span className="text-gray-400 text-xs block mb-1">PROJECT.03</span>
-              Webhook API Integrations
-            </button>
+            {PROJECTS.map((proj, idx) => {
+              const isActive = activeProjectIndex === idx;
+              return isActive ? (
+                <button key={proj.id} className="w-full text-left p-6 border-2 border-[var(--color-fg)] bg-white font-black shadow-[4px_4px_0_0_var(--color-fg)] transform -translate-y-1 -translate-x-1 transition-all relative z-10 cursor-default">
+                  <span className="text-[var(--color-accent)] font-bold text-xs flex items-center gap-2 mb-2">
+                    <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse"></span>
+                    &gt; ACTIVE_PROCESS [{proj.id}]
+                  </span>
+                  {proj.title}
+                </button>
+              ) : (
+                <button
+                  key={proj.id}
+                  onClick={() => { setActiveProjectIndex(idx); setKey(prev => prev + 1); setIsVisible(true); }}
+                  className="w-full text-left p-6 grid-border bg-transparent border-l-4 border-l-transparent hover:bg-white transition-colors text-gray-500 hover:text-[var(--color-fg)] border-t-transparent first:border-t-[var(--color-bordercolor)]"
+                >
+                  <span className="text-gray-400 text-xs block mb-1">PROJECT.{proj.id}</span>
+                  {proj.title}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -190,32 +314,32 @@ export default function Home() {
         <div className="xl:col-span-9 flex flex-col" key={key} ref={sectionRef}>
           {/* Project Context Header */}
           <div className="grid grid-cols-1 md:grid-cols-3 grid-border-b bg-white">
-            <div className="p-6 md:border-r border-[var(--color-bordercolor)]">
-              <span className="font-mono text-xs text-gray-500 block mb-1">
+            <div className="p-6 md:border-r border-[var(--color-bordercolor)] flex flex-col justify-center">
+              <span className="font-mono text-xs text-gray-500 block mb-2">
                 THE PROBLEM
               </span>
               <p className="font-medium text-sm">
-                Sales team spending 15 hrs/wk manually copying emails from
-                directories.
+                {PROJECTS[activeProjectIndex].problem}
               </p>
             </div>
-            <div className="p-6 md:border-r border-[var(--color-bordercolor)]">
-              <span className="font-mono text-xs text-gray-500 block mb-1">
+            <div className="p-6 md:border-r border-[var(--color-bordercolor)] flex flex-col justify-center">
+              <span className="font-mono text-xs text-gray-500 block mb-2">
                 THE TECH
               </span>
-              <p className="font-medium text-sm font-mono bg-gray-100 px-2 py-1 inline-block rounded">
-                Node.js
-              </p>
-              <p className="font-medium text-sm font-mono bg-gray-100 px-2 py-1 inline-block rounded ml-1">
-                Playwright
-              </p>
+              <div>
+                {PROJECTS[activeProjectIndex].tech.map((t, idx) => (
+                  <p key={idx} className={`font-medium text-sm font-mono bg-gray-100 border border-gray-200 px-2 py-1 inline-block rounded ${idx > 0 ? "ml-2" : ""}`}>
+                    {t}
+                  </p>
+                ))}
+              </div>
             </div>
-            <div className="p-6 bg-[var(--color-accent)]/5">
-              <span className="font-mono text-xs text-[var(--color-accent)] font-bold block mb-1">
+            <div className="p-6 bg-[var(--color-accent)]/5 flex flex-col justify-center">
+              <span className="font-mono text-xs text-[var(--color-accent)] font-bold block mb-2">
                 THE RESULT
               </span>
               <p className="font-bold text-lg text-[var(--color-accent)]">
-                5,000+ Verified Leads / Week
+                {PROJECTS[activeProjectIndex].result}
               </p>
             </div>
           </div>
@@ -225,77 +349,16 @@ export default function Home() {
             {/* Terminal Console */}
             <div className="mock-console p-6 font-mono text-xs lg:border-r border-gray-800 flex flex-col h-96 lg:h-auto overflow-y-auto">
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-800 text-gray-500">
-                <Terminal className="w-4 h-4" /> root@scraper-dyno-01:~# node
-                index.js
+                <Terminal className="w-4 h-4" /> root@scraper-dyno-01:~# {PROJECTS[activeProjectIndex].command}
               </div>
-              {isVisible && (
-                <>
-                  <div className="console-line text-blue-400 mb-2">
-                    [INFO] Initializing Playwright cluster...
-                  </div>
-                  <div
-                    className="console-line text-blue-400 mb-2"
-                    style={{ animationDelay: "0.5s" }}
-                  >
-                    [INFO] Loading residential proxies...
-                  </div>
-                  <div
-                    className="console-line text-yellow-400 mb-2"
-                    style={{ animationDelay: "1.2s" }}
-                  >
-                    [WARN] Cloudflare challenge detected on Target A. Solving...
-                  </div>
-                  <div
-                    className="console-line text-green-400 mb-2"
-                    style={{ animationDelay: "2.5s" }}
-                  >
-                    [SUCCESS] Challenge bypassed. Beginning extraction.
-                  </div>
-                  <div
-                    className="console-line text-gray-400 mb-1"
-                    style={{ animationDelay: "3.0s" }}
-                  >
-                    &gt; Extracted row: Apex Plumbing | 214-555-0192
-                  </div>
-                  <div
-                    className="console-line text-gray-400 mb-1"
-                    style={{ animationDelay: "3.2s" }}
-                  >
-                    &gt; Extracted row: Dallas Leak Detect | 469-555-8811
-                  </div>
-                  <div
-                    className="console-line text-gray-400 mb-1"
-                    style={{ animationDelay: "3.4s" }}
-                  >
-                    &gt; Extracted row: Elite Water Co | [OBFUSCATED_DOM]
-                  </div>
-                  <div
-                    className="console-line text-purple-400 mb-2"
-                    style={{ animationDelay: "3.6s" }}
-                  >
-                    [PROCESS] Running regex de-obfuscation on Elite Water Co...
-                  </div>
-                  <div
-                    className="console-line text-green-400 mb-4"
-                    style={{ animationDelay: "4.2s" }}
-                  >
-                    [SUCCESS] Recovered: 469-555-9002
-                  </div>
-                  <div
-                    className="console-line text-blue-400"
-                    style={{ animationDelay: "5.0s" }}
-                  >
-                    Writing batch to leads.csv... <span className="animate-pulse">_</span>
-                  </div>
-                </>
-              )}
+              {isVisible && PROJECTS[activeProjectIndex].renderConsole()}
             </div>
 
             {/* Clean Output Table */}
             <div className="p-6 bg-white overflow-x-auto border-t lg:border-t-0 border-[var(--color-bordercolor)]">
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-[var(--color-bordercolor)] font-mono text-xs text-gray-500">
                 <div className="flex items-center gap-2">
-                  <Table className="w-4 h-4" /> leads.csv (Live View)
+                  <Table className="w-4 h-4" /> {PROJECTS[activeProjectIndex].tableFile} (Live View)
                 </div>
                 <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>{" "}
@@ -304,59 +367,14 @@ export default function Home() {
               </div>
               <div className="min-w-[400px]">
                 {/* Header */}
-                <div className="grid grid-cols-12 gap-2 pb-2 mb-2 font-mono text-[10px] text-gray-400 border-b border-[var(--color-bordercolor)] font-bold">
-                  <div className="col-span-1">ID</div>
-                  <div className="col-span-4">COMPANY</div>
-                  <div className="col-span-7">CLEANED_PHONE</div>
+                <div className="grid grid-cols-12 gap-2 pb-2 mb-2 font-mono text-[10px] text-gray-400 border-b border-[var(--color-bordercolor)] font-bold uppercase">
+                  <div className="col-span-1">{PROJECTS[activeProjectIndex].tableHeaders[0]}</div>
+                  <div className="col-span-4">{PROJECTS[activeProjectIndex].tableHeaders[1]}</div>
+                  <div className="col-span-7">{PROJECTS[activeProjectIndex].tableHeaders[2]}</div>
                 </div>
 
                 {/* Rows (Timed to appear with terminal) */}
-                {isVisible && (
-                  <>
-                    <div
-                      className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0"
-                      style={{
-                        animation: "fadeIn 0.1s forwards",
-                        animationDelay: "3.1s",
-                      }}
-                    >
-                      <div className="col-span-1 text-gray-400">01</div>
-                      <div className="col-span-4 font-bold truncate">Apex Plumbing</div>
-                      <div className="col-span-7 text-[var(--color-accent)]">
-                        214-555-0192
-                      </div>
-                    </div>
-                    <div
-                      className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0"
-                      style={{
-                        animation: "fadeIn 0.1s forwards",
-                        animationDelay: "3.3s",
-                      }}
-                    >
-                      <div className="col-span-1 text-gray-400">02</div>
-                      <div className="col-span-4 font-bold truncate">
-                        Dallas Leak Detect
-                      </div>
-                      <div className="col-span-7 text-[var(--color-accent)]">
-                        469-555-8811
-                      </div>
-                    </div>
-                    <div
-                      className="data-row grid grid-cols-12 gap-2 py-2 font-mono text-xs items-center border-b border-gray-100 opacity-0"
-                      style={{
-                        animation: "fadeIn 0.1s forwards",
-                        animationDelay: "4.3s",
-                      }}
-                    >
-                      <div className="col-span-1 text-gray-400">03</div>
-                      <div className="col-span-4 font-bold truncate">Elite Water Co</div>
-                      <div className="col-span-7 text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1 py-0.5 rounded inline-flex items-center gap-1">
-                        <Wand2 className="w-3 h-3 text-[var(--color-accent)]" />{" "}
-                        469-555-9002
-                      </div>
-                    </div>
-                  </>
-                )}
+                {isVisible && PROJECTS[activeProjectIndex].renderTable()}
               </div>
 
               <div className="mt-8 flex justify-center">
