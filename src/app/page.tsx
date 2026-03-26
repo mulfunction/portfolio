@@ -177,7 +177,7 @@ export default function Home() {
         <div className="col-span-1 md:col-span-7 p-6 md:p-8 md:pr-10 lg:p-12 grid-border-b md:grid-border-b-0 md:grid-border-r flex flex-col justify-center overflow-hidden">
           <span className="font-mono text-[var(--color-accent)] font-bold mb-6 flex items-center gap-2 text-xs md:text-sm">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0"></span>
-            01 / INDEPENDENT AUTOMATION CONSULTANT
+            FOR HIRE // DATA & AUTOMATION
           </span>
           <h1 className="text-5xl md:text-[3.5rem] lg:text-[5.5rem] font-black uppercase leading-[0.9] tracking-tighter mb-8 break-words hyphens-auto">
             I build scrapers & <br className="hidden md:block lg:block" />
