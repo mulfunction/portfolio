@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Muldan | Automation Engineer",
-  description: "Independent Automation Consultant building scrapers & automated systems.",
+  title: "Muldan — Data & Automation",
+  description: "Freelance specialist in web scraping, data pipelines, and workflow automation.",
 };
 
 export default function RootLayout({
