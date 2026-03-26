@@ -244,6 +244,9 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <Database className="w-3 h-3" /> PostgreSQL
               </div>
+              <div className="flex items-center gap-2">
+                <Wand2 className="w-3 h-3" /> n8n
+              </div>
             </div>
           </div>
         </div>
