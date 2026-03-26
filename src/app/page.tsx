@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import iconImage from "./icon.jpeg";
 import { Terminal, Code2, Globe, Database, ArrowDown, FolderCode, Table, Wand2, RotateCw, ShieldCheck, Activity, ShieldAlert } from "lucide-react";
 
 // MOCK DATA: Simulating the 3 separate Project Flows
@@ -155,14 +156,15 @@ export default function Home() {
     <main className="flex-grow flex flex-col">
       {/* Nav */}
       <nav className="grid grid-cols-12 grid-border-b font-mono text-sm uppercase tracking-wide sticky top-0 bg-[var(--color-bg)] z-50">
-        <div className="col-span-8 md:col-span-4 p-5 grid-border-r flex items-center font-bold text-xs md:text-sm truncate">
+        <div className="col-span-8 md:col-span-4 p-5 grid-border-r flex items-center font-bold text-xs md:text-sm truncate gap-3">
+          <Image src={iconImage} alt="Muldan Logo" className="w-6 h-6 rounded-full" />
           MULDAN // DATA_OPS
         </div>
         <div className="col-span-4 md:col-span-4 p-5 grid-border-r hidden md:flex items-center justify-center text-gray-500 text-xs md:text-sm">
           Jakarta, ID [UTC+7]
         </div>
         <a
-          href="#contact"
+          href="mailto:muldanrhamid@gmail.com"
           className="col-span-4 md:col-span-4 p-4 md:p-5 flex items-center justify-end md:justify-center hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors cursor-pointer font-bold text-xs md:text-sm whitespace-nowrap"
         >
           Book Scoping Call ↗
@@ -192,9 +194,14 @@ export default function Home() {
             >
               View Interactive Work <ArrowDown className="w-4 h-4" />
             </a>
-            <button className="grid-border px-8 py-4 font-mono uppercase text-sm font-bold hover:bg-white transition-colors">
+            <a
+              href="https://upwork.com/freelancers/muldanh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="grid-border px-8 py-4 font-mono uppercase text-sm font-bold hover:bg-white transition-colors inline-block text-center flex items-center justify-center"
+            >
               Upwork Profile
-            </button>
+            </a>
           </div>
         </div>
 
@@ -389,6 +396,15 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Footer / Sign-off */}
+      <footer className="grid-border-t p-12 lg:p-24 flex flex-col items-center justify-center gap-6 mt-12 bg-[var(--color-bg)]">
+        <Image src={iconImage} alt="Muldan Logo" className="w-16 h-16 rounded-full grayscale hover:grayscale-0 transition-all duration-500" />
+        <div className="font-mono text-xs text-gray-400 uppercase tracking-widest text-center flex flex-col gap-2">
+          <span>© {new Date().getFullYear()} MULDAN // DATA_OPS</span>
+          <span className="text-gray-500">Automated Systems & Scraping</span>
+        </div>
+      </footer>
     </main>
   );
 }
