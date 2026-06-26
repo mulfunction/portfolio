@@ -66,6 +66,7 @@ type Project = {
   icon: React.ReactNode;
   image?: string;
   images?: string[];
+  embedUrl?: string;
   command?: string;
   tableFile?: string;
   tableHeaders?: string[];
@@ -103,6 +104,16 @@ const PROJECTS: Project[] = [
     ],
     icon: <Wand2 className="w-4 h-4" />,
     type: "carousel"
+  },
+  {
+    id: "task-extractor",
+    title: "IMAGE-TO-CSV EXTRACTOR",
+    problem: "Manual extraction of text and action items from unstructured images into spreadsheets was causing massive data entry bottlenecks.",
+    tech: ["React", "Gemini API", "Vision AI"],
+    result: "Instant Image-to-CSV",
+    icon: <FileText className="w-4 h-4" />,
+    type: "video",
+    embedUrl: "https://www.loom.com/embed/a966847c012a49dda543222df7a862ce"
   },
   {
     id: "aipad-scraper",
@@ -467,10 +478,10 @@ export default function Home() {
           <Image
             src="/portrait.jpg"
             alt="Muldan Portrait"
-            width={800}
-            height={1000}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             priority
-            className="w-full h-full object-cover object-center absolute inset-0 grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500 opacity-90 mix-blend-luminosity group-hover:mix-blend-normal"
+            className="object-cover object-center absolute inset-0 grayscale contrast-110 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500 opacity-90 mix-blend-luminosity group-hover:mix-blend-normal"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-transparent opacity-90"></div>
 
@@ -645,6 +656,7 @@ export default function Home() {
                       src={activeProject.images[Math.min(carouselIndex, activeProject.images.length - 1)] || activeProject.images[0]}
                       alt={`${activeProject.title} screenshot ${carouselIndex + 1}`}
                       fill
+                      sizes="(max-width: 1024px) 100vw, 1024px"
                       className="object-contain bg-zinc-900/50"
                       priority
                     />
@@ -681,6 +693,17 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          ) : activeProject.type === "video" && activeProject.embedUrl ? (
+            <div className="flex-grow p-6 md:p-12 flex items-center justify-center relative min-h-[500px]">
+              <div className="relative w-full max-w-4xl aspect-[16/9] border border-[var(--border)] rounded-xl overflow-hidden shadow-[0_0_50px_rgba(255,51,0,0.1)]">
+                <iframe
+                  src={activeProject.embedUrl}
+                  frameBorder="0"
+                  allowFullScreen
+                  className="absolute top-0 left-0 w-full h-full"
+                ></iframe>
+              </div>
+            </div>
           ) : (
             /* Image View */
             <div className="flex-grow p-6 md:p-12 flex items-center justify-center relative min-h-[500px]">
@@ -689,6 +712,7 @@ export default function Home() {
                   src={activeProject.image!}
                   alt={activeProject.title}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 1024px"
                   className="object-cover"
                 />
               </div>
