@@ -1,26 +1,125 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-bordercolor: var(--border);
+  
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #F5F5F3;
+    --foreground: #1A1A1A;
+    --border: #D4D4D0;
+    --accent: #FF4500;
+  }
+  
+  .dark {
+    --background: #000000;
+    --foreground: #e5e5e5;
+    --border: #27272a;
+    --accent: #ff3300;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.grid-border {
+  border: 1px solid var(--border);
+}
+
+.grid-border-b {
+  border-bottom: 1px solid var(--border);
+}
+
+.grid-border-r {
+  border-right: 1px solid var(--border);
+}
+
+.grid-border-l {
+  border-left: 1px solid var(--border);
+}
+
+.grid-border-t {
+  border-top: 1px solid var(--border);
+}
+
+/* Marquee Animation */
+.marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  background: var(--foreground);
+  color: var(--background);
+  will-change: transform;
+}
+
+.marquee-content {
+  display: flex;
+  animation: scroll 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Noise overlay for a premium brutalist texture */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background-color: var(--accent);
+  color: #000;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.portrait-container img {
+  filter: grayscale(100%) contrast(110%);
+  transition: filter 0.4s ease;
+}
+
+.portrait-container:hover img {
+  filter: grayscale(0%) contrast(100%);
+}
+
+.console-line {
+  opacity: 0;
+  animation: fadeIn 0.1s forwards;
+  will-change: opacity;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.data-row {
+  transition: background-color 0.2s;
+}
+
+.data-row:hover {
+  background-color: rgba(128, 128, 128, 0.1);
 }
